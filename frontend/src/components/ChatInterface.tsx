@@ -5,14 +5,14 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { v4 as uuidv4 } from 'uuid'
-import { Send, Moon, Sun, Sparkles, Menu, X } from 'lucide-react'
+import { Send, Moon, Sun, Sparkles, Menu, X, HelpCircle } from 'lucide-react'
 import axios from 'axios'
 
 import { DataSourceMode, Message, ChatResponse } from '@/types'
 import ModeSelector from './ModeSelector'
 import MessageList from './MessageList'
 import { DocumentSidebar } from './DocumentSidebar'
-
+import HelpModal from './HelpModal'
 import { API_BASE_URL } from '../config'
 
 interface Document {
@@ -31,6 +31,7 @@ export default function ChatInterface() {
     const [darkMode, setDarkMode] = useState(true)
     const [documents, setDocuments] = useState<Document[]>([])
     const [sidebarOpen, setSidebarOpen] = useState(false)
+    const [helpOpen, setHelpOpen] = useState(false)
     const [mounted, setMounted] = useState(false)
 
     // Initialize dark mode & mounted state
@@ -249,6 +250,15 @@ export default function ChatInterface() {
                             </div>
                         </div>
 
+                        {/* Help Button */}
+                        <button
+                            onClick={() => setHelpOpen(true)}
+                            className="mr-2 p-2 rounded-xl glass hover:glass-strong transition-smooth"
+                            aria-label="Help"
+                        >
+                            <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400" />
+                        </button>
+
                         {/* Dark Mode Toggle */}
                         <button
                             onClick={() => setDarkMode(!darkMode)}
@@ -309,6 +319,8 @@ export default function ChatInterface() {
                     </div>
                 </div>
             </div>
+
+            <HelpModal isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
         </div>
     )
 }
