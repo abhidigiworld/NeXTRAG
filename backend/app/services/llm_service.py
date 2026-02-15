@@ -29,10 +29,9 @@ class LLMService:
                 logger.info("Anthropic client initialized")
                 
             elif self.provider == "google":
-                import google.generativeai as genai
-                genai.configure(api_key=settings.google_api_key)
-                self.client = genai.GenerativeModel(self.model)
-                logger.info("Google AI client initialized")
+                from google import genai
+                self.client = genai.Client(api_key=settings.google_api_key)
+                logger.info("Google GenAI client initialized")
                 
             elif self.provider == "groq":
                 from groq import Groq
@@ -74,7 +73,10 @@ class LLMService:
         try:
             # Use the existing generate methods but with a simple system prompt
             if self.provider == "google":
-                response = self.client.generate_content(prompt)
+                response = self.client.models.generate_content(
+                    model=self.model,
+                    contents=prompt
+                )
                 return response.text.strip()
             elif self.provider == "openai":
                 return self._generate_openai("You are a keyword generator.", prompt, None, False)
@@ -119,7 +121,10 @@ class LLMService:
         try:
             response_text = ""
             if self.provider == "google":
-                response = self.client.generate_content(prompt)
+                response = self.client.models.generate_content(
+                    model=self.model,
+                    contents=prompt
+                )
                 response_text = response.text.strip()
             elif self.provider == "openai":
                 response_text = self._generate_openai("You are a relevance filter.", prompt, None, False)
@@ -258,21 +263,20 @@ Please provide a well-structured answer based ONLY on the context above. Include
         conversation_history: Optional[List[Dict]],
         stream: bool
     ) -> str:
-        """Generate response using Google AI"""
+        """Generate response using Google GenAI SDK"""
         try:
             full_prompt = f"{system_message}\n\n{user_message}"
-            response = self.client.generate_content(full_prompt)
             
-            # Handle the response based on the new API format
-            if hasattr(response, 'text'):
-                return response.text
-            elif hasattr(response, 'parts'):
-                return response.parts[0].text
-            elif hasattr(response, 'candidates'):
-                return response.candidates[0].content.parts[0].text
-            else:
-                logger.error(f"Unexpected Gemini response format: {response}")
-                return "I apologize, but I encountered an error generating a response."
+            # Note: conversion of conversation_history might be needed for chat mode
+            # But specific format depends on V2 SDK chat usage. 
+            # For now using simple generate_content with full prompt as before.
+            
+            response = self.client.models.generate_content(
+                model=self.model,
+                contents=full_prompt
+            )
+            
+            return response.text
         except Exception as e:
             logger.error(f"Gemini API error: {str(e)}")
             raise

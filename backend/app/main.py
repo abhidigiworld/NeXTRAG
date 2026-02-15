@@ -31,7 +31,11 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.frontend_url, "http://localhost:3000", "http://localhost:3002"],
+    allow_origins=[
+        settings.frontend_url, 
+        "https://69917a62be9967b01572d83f--smartrag.netlify.app",
+        "https://smartrag.netlify.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

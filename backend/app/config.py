@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     llm_model: str = "llama-3.3-70b-versatile"
     
     # Embedding Configuration
-    embedding_provider: Literal["openai", "local"] = "local"
+    embedding_provider: Literal["openai", "local", "google"] = "local"
     embedding_model: str = "all-MiniLM-L6-v2"
     
     # Search Configuration
@@ -70,6 +70,8 @@ class Settings(BaseSettings):
             raise ValueError("GOOGLE_API_KEY is required when using Google as LLM provider")
         if self.embedding_provider == "openai" and not self.openai_api_key:
             raise ValueError("OPENAI_API_KEY is required when using OpenAI embeddings")
+        if self.embedding_provider == "google" and not self.google_api_key:
+            raise ValueError("GOOGLE_API_KEY is required when using Google embeddings")
         if self.search_provider == "tavily" and not self.tavily_api_key:
             raise ValueError("TAVILY_API_KEY is required when using Tavily search")
         if self.search_provider == "serpapi" and not self.serpapi_key:
