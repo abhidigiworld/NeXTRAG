@@ -3,7 +3,6 @@ Embedding generation service
 """
 from typing import List
 import numpy as np
-from sentence_transformers import SentenceTransformer
 from app.config import settings
 from app.utils.logger import logger
 
@@ -21,6 +20,7 @@ class EmbeddingService:
         """Initialize embedding model based on provider"""
         try:
             if self.provider == "local":
+                from sentence_transformers import SentenceTransformer
                 logger.info(f"Loading local embedding model: {self.model_name}")
                 self.model = SentenceTransformer(self.model_name)
                 logger.info("Local embedding model loaded successfully")
