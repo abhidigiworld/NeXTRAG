@@ -13,7 +13,7 @@ import ModeSelector from './ModeSelector'
 import MessageList from './MessageList'
 import { DocumentSidebar } from './DocumentSidebar'
 
-const API_BASE_URL = 'http://localhost:8000/api'
+import { API_BASE_URL } from '../config'
 
 interface Document {
     id: string

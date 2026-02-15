@@ -5,6 +5,7 @@ import { useCallback, useState } from 'react'
 import { Upload, X, FileText, Loader2 } from 'lucide-react'
 import axios from 'axios'
 import { UploadedFile } from '@/types'
+import { API_BASE_URL } from '../config'
 
 interface Props {
     sessionId: string
@@ -50,7 +51,7 @@ export default function FileUpload({ sessionId, onUploadComplete }: Props) {
                 formData.append('file', file)
 
                 const response = await axios.post<UploadedFile>(
-                    `http://localhost:8000/api/upload?session_id=${sessionId}`,
+                    `${API_BASE_URL}/upload?session_id=${sessionId}`,
                     formData,
                     {
                         headers: {
